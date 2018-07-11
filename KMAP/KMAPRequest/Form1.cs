@@ -21,13 +21,14 @@ namespace KMAPRequest
     public partial class Form1 : Form
     {
         private string DataFormat = "JSON";                             // (必須)API資料傳輸格式，建議預設使用JSON
-        private string userid = "admin";                                // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
-        private string tenant = "default";
-        private string KMUrl = "http://km.inventec.com/ESP/api/";       // (必須)KM Server Site的API虛擬目錄URL路徑
+        private string userid = "IEC891652";                                // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
+        private string tenant = "psg";
+        private string KMUrl = "http://km.iec.inventec/ESP/api/";       // (必須)KM Server Site的API虛擬目錄URL路徑
         private string GlobalCurrentDocumentId = "";                    // 暫時無作用,不需要去動它
         private string GlobalCurrentCategoryId = "1";                   // 暫時無作用,不需要去動它
         private string GlobalSearchKeyword = "KM";
-        private string API_Key = "1722e63fda0740e4aff711836d9ca0bc";    // (必須)KM系統中已註冊並啟用的API Key
+        /*BryanHPBook 10.15.69.38*/
+        private string API_Key = "154e10710ea44cdaaaec9cb4f7910ddc";    // (必須)KM系統中已註冊並啟用的API Key
 
 
         public Form1()
@@ -49,7 +50,7 @@ namespace KMAPRequest
             nvc.Add("enabletagsynonyms", "false");
             nvc.Add("enablekeywordsynonyms", "false");
             nvc.Add("containchildcategory", "false");
-            nvc.Add("containchildfolder", "false");
+            nvc.Add("containchildfolder", "true");
             nvc.Add("keyword", this.txtAdvKeyword.Text.Trim());
 
             if (this.txtAdvFolderID.Text.Trim() != string.Empty)
