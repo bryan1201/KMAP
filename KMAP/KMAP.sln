@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KMAP", "KMAP\KMAP.csproj", "{237C2998-7C53-4AF7-A5F2-7ED856E69B0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KMAPRequest", "KMAPRequest\KMAPRequest.csproj", "{3DBFA77A-3BDD-4E14-97F6-031E261654E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{237C2998-7C53-4AF7-A5F2-7ED856E69B0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{237C2998-7C53-4AF7-A5F2-7ED856E69B0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{237C2998-7C53-4AF7-A5F2-7ED856E69B0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DBFA77A-3BDD-4E14-97F6-031E261654E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DBFA77A-3BDD-4E14-97F6-031E261654E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DBFA77A-3BDD-4E14-97F6-031E261654E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DBFA77A-3BDD-4E14-97F6-031E261654E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
