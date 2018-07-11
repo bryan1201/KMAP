@@ -32,11 +32,13 @@
             this.txtAdvFolderID = new System.Windows.Forms.TextBox();
             this.JsonResultTxt = new System.Windows.Forms.TextBox();
             this.txtAdvKeyword = new System.Windows.Forms.TextBox();
+            this.lblAdvKeyword = new System.Windows.Forms.Label();
+            this.lblFolderId = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnAdvSearch
             // 
-            this.btnAdvSearch.Location = new System.Drawing.Point(24, 24);
+            this.btnAdvSearch.Location = new System.Drawing.Point(507, 104);
             this.btnAdvSearch.Name = "btnAdvSearch";
             this.btnAdvSearch.Size = new System.Drawing.Size(75, 23);
             this.btnAdvSearch.TabIndex = 0;
@@ -46,7 +48,7 @@
             // 
             // txtAdvFolderID
             // 
-            this.txtAdvFolderID.Location = new System.Drawing.Point(172, 24);
+            this.txtAdvFolderID.Location = new System.Drawing.Point(147, 68);
             this.txtAdvFolderID.Name = "txtAdvFolderID";
             this.txtAdvFolderID.Size = new System.Drawing.Size(186, 29);
             this.txtAdvFolderID.TabIndex = 1;
@@ -61,16 +63,36 @@
             // 
             // txtAdvKeyword
             // 
-            this.txtAdvKeyword.Location = new System.Drawing.Point(172, 71);
+            this.txtAdvKeyword.Location = new System.Drawing.Point(147, 24);
             this.txtAdvKeyword.Name = "txtAdvKeyword";
-            this.txtAdvKeyword.Size = new System.Drawing.Size(186, 29);
+            this.txtAdvKeyword.Size = new System.Drawing.Size(403, 29);
             this.txtAdvKeyword.TabIndex = 3;
+            // 
+            // lblAdvKeyword
+            // 
+            this.lblAdvKeyword.AutoSize = true;
+            this.lblAdvKeyword.Location = new System.Drawing.Point(25, 24);
+            this.lblAdvKeyword.Name = "lblAdvKeyword";
+            this.lblAdvKeyword.Size = new System.Drawing.Size(103, 18);
+            this.lblAdvKeyword.TabIndex = 4;
+            this.lblAdvKeyword.Text = "Adv Keyword";
+            // 
+            // lblFolderId
+            // 
+            this.lblFolderId.AutoSize = true;
+            this.lblFolderId.Location = new System.Drawing.Point(25, 71);
+            this.lblFolderId.Name = "lblFolderId";
+            this.lblFolderId.Size = new System.Drawing.Size(71, 18);
+            this.lblFolderId.TabIndex = 5;
+            this.lblFolderId.Text = "Folder Id";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(594, 485);
+            this.Controls.Add(this.lblFolderId);
+            this.Controls.Add(this.lblAdvKeyword);
             this.Controls.Add(this.txtAdvKeyword);
             this.Controls.Add(this.JsonResultTxt);
             this.Controls.Add(this.txtAdvFolderID);
@@ -88,6 +110,8 @@
         private System.Windows.Forms.TextBox txtAdvFolderID;
         private System.Windows.Forms.TextBox JsonResultTxt;
         private System.Windows.Forms.TextBox txtAdvKeyword;
+        private System.Windows.Forms.Label lblAdvKeyword;
+        private System.Windows.Forms.Label lblFolderId;
     }
 }
 

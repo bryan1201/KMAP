@@ -28,7 +28,7 @@ namespace KMAPRequest
         private string GlobalCurrentCategoryId = "1";                   // 暫時無作用,不需要去動它
         private string GlobalSearchKeyword = "KM";
         private string API_Key = "1722e63fda0740e4aff711836d9ca0bc";    // (必須)KM系統中已註冊並啟用的API Key
-
+        /*20180711 Bryan Wu*/
 
         public Form1()
         {
