@@ -1,0 +1,122 @@
+﻿@model KMAP.Models.AdvanceSearch
+@using KMAP.Controllers.General
+@using KMAP.Models
+
+@{
+    ViewBag.Title = "KM Advance Search";
+    string searchResult = string.IsNullOrEmpty(ViewBag.ResultText) ? string.Empty : ViewBag.ResultText;
+    string PartialExtendedSearchResult = "PartialExtendedSearchResult";
+    string ReadContentUrl = Constant.ReadContentUrl;
+    IList<DatumClass> datumClasses = ViewBag.DatumClassList;
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+
+<div class="modal-body">
+    @if (ViewBag.DatumClassList != null)
+    {
+        @Html.Partial(PartialExtendedSearchResult, datumClasses);
+    }
+    <pre>
+@searchResult
+</pre>
+   
+</div>
+
+<div>
+    <pre>
+http://localhost:60218/KMAP/KMSearch/AdvSearch?advkeyword=3D&folderId=1573&userId=IEC891652
+http://km.iec.inventec/ESP/readdocument.aspx?documentId=4972
+http://km.iec.inventec/ESP/readdocument.aspx?documentId=4973
+http://km.iec.inventec/ESP/readdocument.aspx?documentId=4974
+
+</pre>
+<pre>
+    {
+    "tid": 0,
+    "statuscode": "000",
+    "data": [
+    [
+    {
+    "__type": "ExtendedSearchResult:#GSS.Core.Index2.Model",
+    "ActivationDatetime": "/Date(-6847804800000)/",
+    "Author": "76900d1e-d52f-4a51-9795-ab210397fc56",
+    "Categories": [],
+    "CreationDatetime": "/Date(1528982316000)/",
+    "Creator": "76900d1e-d52f-4a51-9795-ab210397fc56",
+    "DeactivationDatetime": "/Date(253402300799000)/",
+    "DocumentClass": "1",
+    "Folders": [
+    "1573"
+    ],
+    "LastModifiedDatetime": "/Date(1528982316000)/",
+    "Lock": false,
+    "RelatedItems": [],
+    "Score": 721.9219,
+    "State": 0,
+    "Summary": "",
+    "Tags": [],
+    "Title": "PCB限高3D設計輔助程式出圖操作",
+    "UniqueKey": "4974",
+    "Version": 1,
+    "Fields": []
+    },
+    {
+    "__type": "ExtendedSearchResult:#GSS.Core.Index2.Model",
+    "ActivationDatetime": "/Date(-6847804800000)/",
+    "Author": "76900d1e-d52f-4a51-9795-ab210397fc56",
+    "Categories": [],
+    "CreationDatetime": "/Date(1528982273000)/",
+    "Creator": "76900d1e-d52f-4a51-9795-ab210397fc56",
+    "DeactivationDatetime": "/Date(253402300799000)/",
+    "DocumentClass": "1",
+    "Folders": [
+    "1573"
+    ],
+    "LastModifiedDatetime": "/Date(1528982273000)/",
+    "Lock": false,
+    "RelatedItems": [],
+    "Score": 721.9209,
+    "State": 0,
+    "Summary": "",
+    "Tags": [],
+    "Title": "應用ProE繪製PCB 3D連板圖操作",
+    "UniqueKey": "4973",
+    "Version": 1,
+    "Fields": []
+    },
+    {
+    "__type": "ExtendedSearchResult:#GSS.Core.Index2.Model",
+    "ActivationDatetime": "/Date(-6847804800000)/",
+    "Author": "76900d1e-d52f-4a51-9795-ab210397fc56",
+    "Categories": [],
+    "CreationDatetime": "/Date(1528982255000)/",
+    "Creator": "76900d1e-d52f-4a51-9795-ab210397fc56",
+    "DeactivationDatetime": "/Date(253402300799000)/",
+    "DocumentClass": "1",
+    "Folders": [
+    "1573"
+    ],
+    "LastModifiedDatetime": "/Date(1528982255000)/",
+    "Lock": false,
+    "RelatedItems": [],
+    "Score": 13.443646,
+    "State": 0,
+    "Summary": "",
+    "Tags": [],
+    "Title": "繪製光跡路徑的Pro/E工具-LightTracer",
+    "UniqueKey": "4972",
+    "Version": 1,
+    "Fields": []
+    }
+    ],
+    62,
+    0,
+    3
+    ]
+    }
+</pre>
+</div>
+

@@ -1,0 +1,18 @@
+﻿@using KMAP.Models
+@using KMAP.Controllers.General
+@model IEnumerable<DatumClass>
+<div>
+    <table class="table table-bordered table-striped table-condensed" style="width:100%">
+        <tr>
+            <th>@Html.DisplayNameFor(model=>model.Title)</th>
+            <th>@Html.DisplayNameFor(model=>model.UniqueKey)</th>
+        </tr>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td><a href=@string.Format("{0}{1}",Constant.ReadContentUrl,item.UniqueKey) target="_blank">@Html.DisplayFor(modelItem => item.Title)</a></td>
+                <td>@Html.DisplayFor(modelItem=>item.UniqueKey)</td>
+            </tr>
+        }
+    </table>
+</div>

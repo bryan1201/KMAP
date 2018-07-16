@@ -12,25 +12,39 @@ using System.Collections.Specialized;
 
 using KMAP.Models;
 using System.Text;
+using KMAP.Controllers.General;
 
 namespace KMAP.Controllers.APIs
 {
     public class AdvSearch
     {
-        private string DataFormat = "JSON";                             // (必須)API資料傳輸格式，建議預設使用JSON
-        private string kmuserid = "IEC891652";                                // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
-        private string tenant = "psg";
-        private string KMUrl = "http://km.iec.inventec/ESP/api/";       // (必須)KM Server Site的API虛擬目錄URL路徑
+        private string DataFormat = Constant.DataFormat;                             // (必須)API資料傳輸格式，建議預設使用JSON
+        private string kmuserid = Constant.LogonUserId;                          // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
+        private string tenant = Constant.TENANT;
+        private string KMUrl = Constant.KMPUrl;       // (必須)KM Server Site的API虛擬目錄URL路徑
         private string GlobalCurrentDocumentId = "";                    // 暫時無作用,不需要去動它
         private string GlobalCurrentCategoryId = "1";                   // 暫時無作用,不需要去動它
         private string GlobalSearchKeyword = "KM";
         /*BryanHPBook 10.15.69.38*/
         private string API_Key = "154e10710ea44cdaaaec9cb4f7910ddc";    // (必須)KM系統中已註冊並啟用的API Key
 
+        public IList<DatumClass> datumClasses { get; set; }
+
+        public AdvSearch(string advkeyword, string folderId, string userId)
+        {
+            advkeyword = string.IsNullOrEmpty(advkeyword) ? "3D" : advkeyword;
+            folderId = string.IsNullOrEmpty(folderId) ? "1573" : folderId;
+            kmuserid = string.IsNullOrEmpty(userId) ? kmuserid : userId;
+            string jsonString = GetResult(advkeyword, folderId, kmuserid);
+            ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(jsonString);
+            datumClasses = extendedSearchResult.Data.FirstOrDefault().DatumClassArray.ToList();
+        }
+
         public string GetResult(string advkeyword, string folderId, string userId)
         {
             string result = string.Empty;
-            userId = kmuserid;
+            userId = string.IsNullOrEmpty(userId) ? kmuserid : userId;
+            advkeyword = string.IsNullOrEmpty(advkeyword) ? "3D" : advkeyword;
             WebClient client2 = new WebClient();
             client2.Encoding = Encoding.UTF8;
             string targetAdvSearchUrl = GetServiceUrl(ServiceType.GetAdvancedResult, userId: userId);
@@ -134,10 +148,10 @@ namespace KMAP.Controllers.APIs
                     ServiceUrl = GetKmUrl() + "download2/{0}" + "?shell=true&tenant=" + tenant + "&";
                     break;
                 case ServiceType.AcquireFolderDraft:
-                    ServiceUrl = GetKmUrl() + "folder/newdraft/{0}" + "?shell=true&tid=0&pi=0&ps=10&api_key=" + API_Key + "&who=" + userid + "&format=" + DataFormat + "&tenant=" + tenant + "&";
+                    ServiceUrl = GetKmUrl() + "folder/newdraft/{0}" + "?shell=true&tid=0&pi=0&ps=10&api_key=" + API_Key + "&who=" + userId + "&format=" + DataFormat + "&tenant=" + tenant + "&";
                     break;
                 case ServiceType.AddFolder:
-                    ServiceUrl = GetKmUrl() + "folder/new/{0}" + "?shell=true&tid=0&api_key=" + API_Key + "&who=" + userid + "&format=" + DataFormat + "&tenant=" + tenant + "&";
+                    ServiceUrl = GetKmUrl() + "folder/new/{0}" + "?shell=true&tid=0&api_key=" + API_Key + "&who=" + userId + "&format=" + DataFormat + "&tenant=" + tenant + "&";
                     break;
                 default:
                     break;
@@ -149,5 +163,10 @@ namespace KMAP.Controllers.APIs
         {
             return KMUrl;
         }
+    }
+    public class AdvSearchList
+    {
+        public string Title { get; set; }
+        public string UniqueKey { get; set; }
     }
 }
