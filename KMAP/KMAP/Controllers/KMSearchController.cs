@@ -18,10 +18,36 @@ namespace KMAP.Controllers
         // GET: KMAdvSearch
         public ActionResult AdvSearch(string advkeyword, string folderId, string userId)
         {
-            AdvanceSearch adv = new AdvanceSearch(advkeyword, folderId, userId);
-            string result = adv.GetResultTXT();
-            ViewBag.ResultText = result;
-            ViewBag.DatumClassList = adv.datumClassList;
+            try
+            {
+                AdvanceSearch adv = new AdvanceSearch(advkeyword, folderId, userId);
+                string result = adv.GetResultTXT();
+                ViewBag.ResultText = result;
+                ViewBag.DatumClassList = adv.datumClassList;
+            }
+            catch(Exception ex)
+            {
+                string errormsg = ex.Message;
+                ViewBag.ResultText = errormsg;
+            }
+            return View();
+        }
+
+        public ActionResult AdvSearchDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
+        {
+            try
+            {
+                AdvanceSearch adv = new AdvanceSearch(advkeyword, folderId, userId);
+                adv.AdvanceSearchDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
+                string result = adv.GetResultDocClassTXT();
+                ViewBag.ResultText = result;
+                ViewBag.DatumClassList = adv.datumClassList;
+            }
+            catch (Exception ex)
+            {
+                string errormsg = ex.Message;
+                ViewBag.ResultText = errormsg;
+            }
             return View();
         }
 

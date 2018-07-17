@@ -10,6 +10,7 @@ namespace KMAP.Controllers.General
     {
         public static String DataFormat = ConfigurationManager.AppSettings["DataFormat"];
         public static string KMUserId = ConfigurationManager.AppSettings["KMUserId"];
+        public static string API_Key = ConfigurationManager.AppSettings["API_Key"];
         public static string TENANT = ConfigurationManager.AppSettings["TENANT"]; //psg
         public static string KMPUrl = ConfigurationManager.AppSettings["KMPUrl"];
         public static string ReadContentUrl = ConfigurationManager.AppSettings["ReadContentUrl"];

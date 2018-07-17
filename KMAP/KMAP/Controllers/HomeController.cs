@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using KMAP.Controllers.General;
 
 namespace KMAP.Controllers
 {
@@ -10,6 +11,7 @@ namespace KMAP.Controllers
     {
         public ActionResult Index()
         {
+            ViewBag.Title = Constant.S_Title;
             return View();
         }
 

@@ -10,6 +10,8 @@ namespace KMAP.Models
     public class AdvanceSearch
     {
         private AdvSearch advsearch;
+        private string DocClass = string.Empty;
+        private string DocClassValue = string.Empty;
         private string AdvKeyword = string.Empty;
         private string FolderId = string.Empty;
         private string UserId = string.Empty;
@@ -20,6 +22,19 @@ namespace KMAP.Models
             this.FolderId = folderId;
             this.UserId = userId;
             advsearch = new AdvSearch(AdvKeyword, FolderId, UserId);
+            advsearch.AdvSearchSimple(AdvKeyword, FolderId, UserId);
+            datumClassList = advsearch.datumClasses;
+        }
+
+        public void AdvanceSearchDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
+        {
+            this.DocClass = docclass;
+            this.DocClassValue = docclassvalue;
+            this.AdvKeyword = advkeyword;
+            this.FolderId = folderId;
+            this.UserId = userId;
+            advsearch = new AdvSearch(AdvKeyword, FolderId, UserId);
+            advsearch.AdvSearchDocClass(DocClass, DocClassValue, AdvKeyword, FolderId, UserId);
             datumClassList = advsearch.datumClasses;
         }
 
@@ -27,6 +42,13 @@ namespace KMAP.Models
         {
             string result = string.Empty;
             result = advsearch.GetResult(advkeyword: this.AdvKeyword, folderId: this.FolderId, userId: this.UserId);
+            return result;
+        }
+
+        public string GetResultDocClassTXT()
+        {
+            string result = string.Empty;
+            result = advsearch.GetResultDocClass(docclass:this.DocClass, docclassvalue:this.DocClassValue, advkeyword: this.AdvKeyword, folderId: this.FolderId, userId: this.UserId);
             return result;
         }
 
