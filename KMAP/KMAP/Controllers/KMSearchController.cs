@@ -9,6 +9,7 @@ namespace KMAP.Controllers
 {
     public class KMSearchController : Controller
     {
+        private KMDocument kmd;
         // GET: KMSearch
         public ActionResult Index()
         {
@@ -18,12 +19,15 @@ namespace KMAP.Controllers
         // GET: KMAdvSearch
         public ActionResult AdvSearch(string advkeyword, string folderId, string userId)
         {
+            if (string.IsNullOrEmpty(userId))
+                return View();
+
             try
             {
-                AdvanceSearch adv = new AdvanceSearch(advkeyword, folderId, userId);
-                string result = adv.GetResultTXT();
+                kmd = new KMDocument();
+                string result = kmd.GetResult(advkeyword, folderId, userId);
                 ViewBag.ResultText = result;
-                ViewBag.DatumClassList = adv.datumClassList;
+                ViewBag.DatumClassList = kmd.datumClasses;
             }
             catch(Exception ex)
             {
@@ -37,11 +41,11 @@ namespace KMAP.Controllers
         {
             try
             {
-                AdvanceSearch adv = new AdvanceSearch(advkeyword, folderId, userId);
-                adv.AdvanceSearchDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
-                string result = adv.GetResultDocClassTXT();
+                kmd = new KMDocument();
+                kmd.AdvSearchDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
+                string result = kmd.GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
                 ViewBag.ResultText = result;
-                ViewBag.DatumClassList = adv.datumClassList;
+                ViewBag.DatumClassList = kmd.datumClasses;
             }
             catch (Exception ex)
             {

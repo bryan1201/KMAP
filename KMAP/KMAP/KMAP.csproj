@@ -171,8 +171,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Controllers\APIs\AdvSearch.cs" />
-    <Compile Include="Models\AdvanceSearch.cs" />
     <Compile Include="Models\ExtendedSearchResult.cs" />
+    <Compile Include="Models\KMDocument.cs" />
     <Compile Include="Models\ServiceType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
