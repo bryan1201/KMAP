@@ -51,8 +51,8 @@ namespace KMAP.Models
         {
             docclass = string.IsNullOrEmpty(docclass) ? "23" : docclass;
             docclassvalue = string.IsNullOrEmpty(docclassvalue) ? "摘要:公差分析 AND 作者:Wilson" : docclassvalue;
-            advkeyword = string.IsNullOrEmpty(advkeyword) ? "3D" : advkeyword;
-            folderId = string.IsNullOrEmpty(folderId) ? "1573" : folderId;
+            advkeyword = string.IsNullOrEmpty(advkeyword) ? "" : advkeyword;
+            folderId = string.IsNullOrEmpty(folderId) ? "" : folderId;
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             string jsonString = GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, kmUserid);
             ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(jsonString);
@@ -71,19 +71,22 @@ namespace KMAP.Models
             ArrayList al = new ArrayList();
             NameValueCollection nvc = new NameValueCollection();
 
-            nvc.Add("docclass", docclass);
-            nvc.Add("docclassvalue", docclassvalue);
+
             nvc.Add("enabletagsynonyms", "false");
             nvc.Add("enablekeywordsynonyms", "false");
             nvc.Add("containchildcategory", "false");
             nvc.Add("containchildfolder", "true");
-            nvc.Add("keyword", advkeyword.Trim());
+            nvc.Add("keywordfield", "摘要");
+            nvc.Add("keywordfield", "作者");
+            nvc.Add("docclass", docclass);
+            nvc.Add("docclassvalue", docclassvalue);
 
-            if (folderId.Trim() != string.Empty)
-            {
+            if (!string.IsNullOrEmpty(advkeyword))
+                nvc.Add("keyword", advkeyword.Trim());
+
+            if (!string.IsNullOrEmpty(folderId.Trim()))
                 nvc.Add("folder", folderId.Trim());
-            }
-
+            
             string uploadData = "";
             foreach (string k in nvc.Keys)
             {

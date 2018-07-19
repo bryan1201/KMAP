@@ -26,6 +26,7 @@ namespace KMAP.Controllers
             {
                 kmd = new KMDocument();
                 string result = kmd.GetResult(advkeyword, folderId, userId);
+                kmd.AdvSearchSimple(advkeyword, folderId, userId);
                 ViewBag.ResultText = result;
                 ViewBag.DatumClassList = kmd.datumClasses;
             }
