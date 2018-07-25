@@ -14,13 +14,11 @@ namespace KMAP.Models
 {
     public class KMDocument
     {
-        private string DataFormat = Constant.DataFormat;    // (必須)API資料傳輸格式，建議預設使用JSON
+        private string DataFormat = KMService.DataFormat;    // (必須)API資料傳輸格式，建議預設使用JSON
         private string kmUserid = Constant.LogonUserId;     // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
-        private string tenant = Constant.TENANT;
-        private string KMUrl = Constant.KMPUrl;             // (必須)KM Server Site的API虛擬目錄URL路徑
-        private string GlobalCurrentDocumentId = "";        // 暫時無作用,不需要去動它
-        private string GlobalCurrentCategoryId = "1";       // 暫時無作用,不需要去動它
-        private string GlobalSearchKeyword = "KM";
+        private string tenant = KMService.TENANT;
+        private string KMUrl = KMService.KMPUrl;             // (必須)KM Server Site的API虛擬目錄URL路徑
+
 
         private string DocClass = string.Empty;
         private string DocClassValue = string.Empty;
@@ -28,13 +26,26 @@ namespace KMAP.Models
         private string FolderId = string.Empty;
 
         /*BryanHPBook 10.15.69.38*/
-        private string API_Key = Constant.API_Key;          // (必須)KM系統中已註冊並啟用的API Key="154e10710ea44cdaaaec9cb4f7910ddc"
+        private string API_Key = KMService.API_Key;          // (必須)KM系統中已註冊並啟用的API Key="154e10710ea44cdaaaec9cb4f7910ddc"
 
         public IList<DatumClass> datumClasses { get; set; }
+        public IList<KMDocumentFile> fileClasses { get; set; }
 
         public KMDocument()
         {
             //Do nothing...
+        }
+
+        private void SetFileClasses(string userId)
+        {
+            IList<KMDocumentFile> fileclasses = new List<KMDocumentFile>();
+            foreach(var datum in datumClasses)
+            {
+                KMDocumentFile kdf = new KMDocumentFile();
+                kdf.GetFileClass(docId: datum.UniqueKey.ToString(), userId: userId);
+                fileclasses.Add(kdf);
+            }
+            fileClasses = fileclasses;
         }
 
         public void AdvSearchSimple(string advkeyword, string folderId, string userId)
@@ -45,6 +56,7 @@ namespace KMAP.Models
             string jsonString = GetResult(advkeyword, folderId, kmUserid);
             ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(jsonString);
             datumClasses = extendedSearchResult.Data.FirstOrDefault().DatumClassArray.ToList();
+            SetFileClasses(userId: userId);
         }
 
         public void AdvSearchDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
@@ -57,6 +69,7 @@ namespace KMAP.Models
             string jsonString = GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, kmUserid);
             ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(jsonString);
             datumClasses = extendedSearchResult.Data.FirstOrDefault().DatumClassArray.ToList();
+            SetFileClasses(userId: userId);
         }
 
         public string GetResultDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
@@ -66,7 +79,7 @@ namespace KMAP.Models
             advkeyword = string.IsNullOrEmpty(advkeyword) ? string.Empty : advkeyword;
             WebClient client2 = new WebClient();
             client2.Encoding = Encoding.UTF8;
-            string targetAdvSearchUrl = GetServiceUrl(ServiceType.GetAdvancedResult, userId: userId);
+            string targetAdvSearchUrl = KMService.GetServiceUrl(ServiceType.GetAdvancedResult, docId:"0", userId: userId, tenant:tenant);
 
             ArrayList al = new ArrayList();
             NameValueCollection nvc = new NameValueCollection();
@@ -124,7 +137,8 @@ namespace KMAP.Models
             advkeyword = string.IsNullOrEmpty(advkeyword) ? "3D" : advkeyword;
             WebClient client2 = new WebClient();
             client2.Encoding = Encoding.UTF8;
-            string targetAdvSearchUrl = GetServiceUrl(ServiceType.GetAdvancedResult, userId: userId);
+            string targetAdvSearchUrl = KMService.GetServiceUrl(ServiceType.GetAdvancedResult, docId:"0", userId: userId,
+                tenant:tenant);
 
             ArrayList al = new ArrayList();
             NameValueCollection nvc = new NameValueCollection();
@@ -170,76 +184,7 @@ namespace KMAP.Models
             }
         }
 
-        private string GetServiceUrl(ServiceType serviceType, string userId)
-        {
-            string ServiceUrl = "";
 
-            switch (serviceType)
-            {
-                case ServiceType.GetRootFolder:
-                    ServiceUrl = GetKmUrl() + "folder/root/public?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.UploadFile:
-                    ServiceUrl = GetKmUrl() + "upload?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.AcquireDocumentDraft:
-                    ServiceUrl = GetKmUrl() + "document/acquirenewdocumentdraft?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.SubmitNewDocument:
-                    ServiceUrl = GetKmUrl() + "document/new?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.AllDocumentClass:
-                    ServiceUrl = GetKmUrl() + "documentclass/all/enabled?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.GetCategoryInfo:
-                    ServiceUrl = GetKmUrl() + "category/" + GlobalCurrentCategoryId + "?load_path=False&shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.GetSearchExBySimple:
-                    ServiceUrl = GetKmUrl() + "search/ext/simple/" + GlobalSearchKeyword + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.GetAdvancedResult:
-                    ServiceUrl = GetKmUrl() + "search/advancedresult" + "?shell=true&tid=0&api_key=" + API_Key + "&who=" + userId + "&format=" + DataFormat + "&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.GetDocument:
-                    ServiceUrl = GetKmUrl() + "document/" + GlobalCurrentDocumentId.ToString() + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.AddUser:
-                    ServiceUrl = GetKmUrl() + "user/add" + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.GetUser:
-                    ServiceUrl = GetKmUrl() + "user/{0}" + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.GetUserBySubjectId:
-                    ServiceUrl = GetKmUrl() + "user/exact/{0}" + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.UpdateUser:
-                    ServiceUrl = GetKmUrl() + "user/update" + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.DeleteUser:
-                    ServiceUrl = GetKmUrl() + "user/delete/{0}" + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.GetAllUser:
-                    ServiceUrl = GetKmUrl() + "user/all" + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.DownloadFile2:
-                    ServiceUrl = GetKmUrl() + "download2/{0}" + "?shell=true&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.AcquireFolderDraft:
-                    ServiceUrl = GetKmUrl() + "folder/newdraft/{0}" + "?shell=true&tid=0&pi=0&ps=10&api_key=" + API_Key + "&who=" + userId + "&format=" + DataFormat + "&tenant=" + tenant + "&";
-                    break;
-                case ServiceType.AddFolder:
-                    ServiceUrl = GetKmUrl() + "folder/new/{0}" + "?shell=true&tid=0&api_key=" + API_Key + "&who=" + userId + "&format=" + DataFormat + "&tenant=" + tenant + "&";
-                    break;
-                default:
-                    break;
-            }
-            return ServiceUrl;
-        }
-
-        private string GetKmUrl()
-        {
-            return KMUrl;
-        }
     }
     class JsonHelper
     {

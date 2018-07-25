@@ -173,6 +173,8 @@
     <Compile Include="Controllers\APIs\AdvSearch.cs" />
     <Compile Include="Models\ExtendedSearchResult.cs" />
     <Compile Include="Models\KMDocument.cs" />
+    <Compile Include="Models\KMDocumentFile.cs" />
+    <Compile Include="Models\KMService.cs" />
     <Compile Include="Models\ServiceType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

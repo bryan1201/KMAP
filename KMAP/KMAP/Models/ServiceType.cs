@@ -25,6 +25,7 @@ namespace KMAP.Models
         DownloadFile2,
         GetAdvancedResult,
         AcquireFolderDraft,
-        AddFolder
+        AddFolder,
+        GetDocumentFileById
     }
 }

@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Configuration;
+using KMAP.Models;
 
 namespace KMAP.Controllers.General
 {
     public class Constant
     {
-        public static String DataFormat = ConfigurationManager.AppSettings["DataFormat"];
-        public static string KMUserId = ConfigurationManager.AppSettings["KMUserId"];
-        public static string API_Key = ConfigurationManager.AppSettings["API_Key"];
-        public static string TENANT = ConfigurationManager.AppSettings["TENANT"]; //psg
-        public static string KMPUrl = ConfigurationManager.AppSettings["KMPUrl"];
+
         public static string ReadContentUrl = ConfigurationManager.AppSettings["ReadContentUrl"];
         public static String S_SPACE = " ";
         public static String S_Title = ConfigurationManager.AppSettings["Title"];
@@ -30,6 +27,7 @@ namespace KMAP.Controllers.General
         public static String QASDBContext = "QASDBContext";
         public static bool IsTracking = bool.Parse(ConfigurationManager.AppSettings["IsTracking"]);
         public static string TrackingSubject = ConfigurationManager.AppSettings["TrackingSubject"];
+
         public Constant()
         {
             //
