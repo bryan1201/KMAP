@@ -223,6 +223,7 @@
     <Content Include="Views\KMSearch\AdvSearch.cshtml" />
     <Content Include="Views\KMSearch\PartialExtendedSearchResult.cshtml" />
     <Content Include="Views\KMSearch\AdvSearchDocClass.cshtml" />
+    <Content Include="Views\KMSearch\PartialDocumentFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

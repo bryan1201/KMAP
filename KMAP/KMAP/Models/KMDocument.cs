@@ -19,7 +19,6 @@ namespace KMAP.Models
         private string tenant = KMService.TENANT;
         private string KMUrl = KMService.KMPUrl;             // (必須)KM Server Site的API虛擬目錄URL路徑
 
-
         private string DocClass = string.Empty;
         private string DocClassValue = string.Empty;
         private string AdvKeyword = string.Empty;

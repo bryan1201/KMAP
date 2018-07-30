@@ -19,6 +19,8 @@ namespace KMAP.Models
     {
         private string kmUserid = Constant.LogonUserId;     // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
         private string tenant = KMService.TENANT;
+        public string DocumentId { get; set; }
+
         public IList<KFDatum> kmFiles { get; set; }
         public KMDocumentFile()
         {
@@ -28,13 +30,14 @@ namespace KMAP.Models
         public string GetFileResult(string docId)
         {
             string result = string.Empty;
-
+            this.DocumentId = docId;
             return result;
         }
 
         public string GetFileClass(string docId, string userId)
         {
             string result = string.Empty;
+            this.DocumentId = docId;
             userId = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             WebClient client2 = new WebClient();
             client2.Encoding = Encoding.UTF8;
@@ -47,8 +50,6 @@ namespace KMAP.Models
                 //ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(result);
                 KMFile kmfileSearchResult = KMFile.FromJson(result);
                 kmFiles = kmfileSearchResult.Data;
-
-                
                 
                 return result;
             }
