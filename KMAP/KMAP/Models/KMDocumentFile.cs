@@ -95,11 +95,22 @@ namespace KMAP.Models
         public bool Ocr { get; set; }
 
         [JsonProperty("OcrLanguage")]
-        [JsonConverter(typeof(ParseStringConverter))]
+        [JsonConverter(typeof(KMDocParseStringConverter))]
         public long OcrLanguage { get; set; }
 
         [JsonProperty("SourceUri")]
         public string SourceUri { get; set; }
+
+        public string GetFileUrl(string DocId)
+        {
+            string result = string.Empty;
+
+            //http://km.iec.inventec/ESP/download.aspx?documentId=3575&fileName=KMAP.zip
+            string FileUrl = @"http://km.iec.inventec/ESP/download.aspx?documentId={0}&fileName={1}";
+            result = string.Format(FileUrl, DocId, this.DisplayName);
+
+            return result;
+        }
     }
 
     public partial class KMFile

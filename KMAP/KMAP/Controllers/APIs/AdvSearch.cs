@@ -20,7 +20,7 @@ namespace KMAP.Controllers.APIs
     {
         private KMDocument kmd;
         
-        public IList<DatumClass> datumClasses { get; set; }
+        public IList<KMDocDatumClass> datumClasses { get; set; }
 
         public AdvSearch()
         {

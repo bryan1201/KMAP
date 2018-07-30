@@ -7,8 +7,10 @@ using KMAP.Controllers.General;
 using System.Collections;
 using System.Net;
 using System.Collections.Specialized;
-using Jayrock.Json;
-using Jayrock.Json.Conversion;
+
+using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace KMAP.Models
 {
@@ -27,7 +29,7 @@ namespace KMAP.Models
         /*BryanHPBook 10.15.69.38*/
         private string API_Key = KMService.API_Key;          // (必須)KM系統中已註冊並啟用的API Key="154e10710ea44cdaaaec9cb4f7910ddc"
 
-        public IList<DatumClass> datumClasses { get; set; }
+        public IList<KMDocDatumClass> datumClasses { get; set; }
         public IList<KMDocumentFile> fileClasses { get; set; }
 
         public KMDocument()
@@ -53,8 +55,8 @@ namespace KMAP.Models
             folderId = string.IsNullOrEmpty(folderId) ? "1573" : folderId;
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             string jsonString = GetResult(advkeyword, folderId, kmUserid);
-            ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(jsonString);
-            datumClasses = extendedSearchResult.Data.FirstOrDefault().DatumClassArray.ToList();
+            KMDoc kmdoc = KMDoc.FromJson(jsonString);
+            datumClasses = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
             SetFileClasses(userId: userId);
         }
 
@@ -66,8 +68,8 @@ namespace KMAP.Models
             folderId = string.IsNullOrEmpty(folderId) ? "" : folderId;
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             string jsonString = GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, kmUserid);
-            ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(jsonString);
-            datumClasses = extendedSearchResult.Data.FirstOrDefault().DatumClassArray.ToList();
+            KMDoc kmdoc = KMDoc.FromJson(jsonString);
+            datumClasses = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
             SetFileClasses(userId: userId);
         }
 
@@ -182,9 +184,226 @@ namespace KMAP.Models
                 result = stringAdvSearchResult;
             }
         }
-
-
+        
     }
+
+    // To parse this JSON data, add NuGet 'Newtonsoft.Json' then do:
+    //
+    //    using QuickType;
+    //
+    //    var extendedSearchResult = ExtendedSearchResult.FromJson(jsonString);
+
+    public partial class KMDoc
+    {
+        [JsonProperty("tid")]
+        public long Tid { get; set; }
+
+        [JsonProperty("statuscode")]
+        public string Statuscode { get; set; }
+
+        [JsonProperty("data")]
+        public KMDocDatumUnion[] Data { get; set; }
+    }
+
+    public partial class KMDocDatumClass
+    {
+        [JsonProperty("__type")]
+        public string Type { get; set; }
+
+        [JsonProperty("ActivationDatetime")]
+        public string ActivationDatetime { get; set; }
+
+        [JsonProperty("Author")]
+        public Guid Author { get; set; }
+
+        [JsonProperty("Categories")]
+        public object[] Categories { get; set; }
+
+        [JsonProperty("CreationDatetime")]
+        public string CreationDatetime { get; set; }
+
+        [JsonProperty("Creator")]
+        public Guid Creator { get; set; }
+
+        [JsonProperty("DeactivationDatetime")]
+        public string DeactivationDatetime { get; set; }
+
+        [JsonProperty("DocumentClass")]
+        [JsonConverter(typeof(KMDocParseStringConverter))]
+        public long DocumentClass { get; set; }
+
+        [JsonProperty("Folders")]
+        [JsonConverter(typeof(KMDocDecodeArrayConverter))]
+        public long[] Folders { get; set; }
+
+        [JsonProperty("LastModifiedDatetime")]
+        public string LastModifiedDatetime { get; set; }
+
+        [JsonProperty("Lock")]
+        public bool Lock { get; set; }
+
+        [JsonProperty("RelatedItems")]
+        public object[] RelatedItems { get; set; }
+
+        [JsonProperty("Score")]
+        public double Score { get; set; }
+
+        [JsonProperty("State")]
+        public long State { get; set; }
+
+        [JsonProperty("Summary")]
+        public string Summary { get; set; }
+
+        [JsonProperty("Tags")]
+        public object[] Tags { get; set; }
+
+        [JsonProperty("Title")]
+        public string Title { get; set; }
+
+        [JsonProperty("UniqueKey")]
+        [JsonConverter(typeof(KMDocParseStringConverter))]
+        public long UniqueKey { get; set; }
+
+        [JsonProperty("Version")]
+        public long Version { get; set; }
+
+        [JsonProperty("Fields")]
+        public object[] Fields { get; set; }
+    }
+
+    public partial struct KMDocDatumUnion
+    {
+        public KMDocDatumClass[] DatumClassArray;
+        public long? Integer;
+
+        public bool IsNull => DatumClassArray == null && Integer == null;
+    }
+
+    public partial class KMDoc
+    {
+        public static KMDoc FromJson(string json) => JsonConvert.DeserializeObject<KMDoc>(json, KMDocConverter.Settings);
+    }
+
+    public static class KMDocSerialize
+    {
+        public static string ToJson(this KMDoc self) => JsonConvert.SerializeObject(self, KMDocConverter.Settings);
+    }
+
+    internal static class KMDocConverter
+    {
+        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters = {
+                KMDocDatumUnionConverter.Singleton,
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+    }
+
+    internal class KMDocDatumUnionConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(KMDocDatumUnion) || t == typeof(KMDocDatumUnion?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            switch (reader.TokenType)
+            {
+                case JsonToken.Integer:
+                    var integerValue = serializer.Deserialize<long>(reader);
+                    return new KMDocDatumUnion { Integer = integerValue };
+                case JsonToken.StartArray:
+                    var arrayValue = serializer.Deserialize<KMDocDatumClass[]>(reader);
+                    return new KMDocDatumUnion { DatumClassArray = arrayValue };
+            }
+            throw new Exception("Cannot unmarshal type DatumUnion");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            var value = (KMDocDatumUnion)untypedValue;
+            if (value.Integer != null)
+            {
+                serializer.Serialize(writer, value.Integer.Value);
+                return;
+            }
+            if (value.DatumClassArray != null)
+            {
+                serializer.Serialize(writer, value.DatumClassArray);
+                return;
+            }
+            throw new Exception("Cannot marshal type DatumUnion");
+        }
+
+        public static readonly KMDocDatumUnionConverter Singleton = new KMDocDatumUnionConverter();
+    }
+
+    internal class KMDocParseStringConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            long l;
+            if (Int64.TryParse(value, out l))
+            {
+                return l;
+            }
+            throw new Exception("Cannot unmarshal type long");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (long)untypedValue;
+            serializer.Serialize(writer, value.ToString());
+            return;
+        }
+
+        public static readonly KMDocParseStringConverter Singleton = new KMDocParseStringConverter();
+    }
+
+    internal class KMDocDecodeArrayConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(long[]);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            reader.Read();
+            var value = new List<long>();
+            while (reader.TokenType != JsonToken.EndArray)
+            {
+                var converter = KMDocParseStringConverter.Singleton;
+                var arrayItem = (long)converter.ReadJson(reader, typeof(long), null, serializer);
+                value.Add(arrayItem);
+                reader.Read();
+            }
+            return value.ToArray();
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            var value = (long[])untypedValue;
+            writer.WriteStartArray();
+            foreach (var arrayItem in value)
+            {
+                var converter = KMDocParseStringConverter.Singleton;
+                converter.WriteJson(writer, arrayItem, serializer);
+            }
+            writer.WriteEndArray();
+            return;
+        }
+
+        public static readonly KMDocDecodeArrayConverter Singleton = new KMDocDecodeArrayConverter();
+    }
+
     class JsonHelper
     {
         private const string INDENT_STRING = "    ";
