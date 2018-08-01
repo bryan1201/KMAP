@@ -3,7 +3,6 @@
 @model IEnumerable<KMDocumentFile>
 @{ 
     //http://km.iec.inventec/ESP/download.aspx?documentId=3575&fileName=KMAP.zip
-    string FileUrl = @"http://km.iec.inventec/ESP/download.aspx?documentId={0}&fileName={1}";
 }
     <div>
         <table class="table table-bordered table-striped table-condensed" style="width:100%">
@@ -17,7 +16,7 @@
                 foreach (var file in item.kmFiles)
                 {
                     <tr>
-                        <td><a href=@string.Format(FileUrl, DocId, file.DisplayName) target="_blank">@Html.DisplayFor(modelItem => file.DisplayName)</a></td>
+                        <td><a href=@file.GetFileUrl(DocId:DocId) target="_blank">@Html.DisplayFor(modelItem => file.DisplayName)</a></td>
                         <td>@Html.DisplayFor(modelItem => file.FileSize)</td>
                     </tr>
                 }

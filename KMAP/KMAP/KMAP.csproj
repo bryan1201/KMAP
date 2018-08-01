@@ -170,8 +170,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\APIs\AdvSearch.cs" />
-    <Compile Include="Models\ExtendedSearchResult.cs" />
+    <Compile Include="Controllers\APIs\KMDocSearch.cs" />
     <Compile Include="Models\KMDocument.cs" />
     <Compile Include="Models\KMDocumentFile.cs" />
     <Compile Include="Models\KMService.cs" />

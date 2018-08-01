@@ -29,8 +29,8 @@ namespace KMAP.Models
         /*BryanHPBook 10.15.69.38*/
         private string API_Key = KMService.API_Key;          // (必須)KM系統中已註冊並啟用的API Key="154e10710ea44cdaaaec9cb4f7910ddc"
 
-        public IList<KMDocDatumClass> datumClasses { get; set; }
-        public IList<KMDocumentFile> fileClasses { get; set; }
+        public IList<KMDocDatumClass> KMDocuments { get; set; }
+        public IList<KMDocumentFile> KMFiles { get; set; }
 
         public KMDocument()
         {
@@ -40,13 +40,13 @@ namespace KMAP.Models
         private void SetFileClasses(string userId)
         {
             IList<KMDocumentFile> fileclasses = new List<KMDocumentFile>();
-            foreach(var datum in datumClasses)
+            foreach(var datum in KMDocuments)
             {
                 KMDocumentFile kdf = new KMDocumentFile();
                 kdf.GetFileClass(docId: datum.UniqueKey.ToString(), userId: userId);
                 fileclasses.Add(kdf);
             }
-            fileClasses = fileclasses;
+            KMFiles = fileclasses;
         }
 
         public void AdvSearchSimple(string advkeyword, string folderId, string userId)
@@ -56,7 +56,7 @@ namespace KMAP.Models
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             string jsonString = GetResult(advkeyword, folderId, kmUserid);
             KMDoc kmdoc = KMDoc.FromJson(jsonString);
-            datumClasses = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
+            KMDocuments = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
             SetFileClasses(userId: userId);
         }
 
@@ -69,7 +69,7 @@ namespace KMAP.Models
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             string jsonString = GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, kmUserid);
             KMDoc kmdoc = KMDoc.FromJson(jsonString);
-            datumClasses = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
+            KMDocuments = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
             SetFileClasses(userId: userId);
         }
 

@@ -28,8 +28,8 @@ namespace KMAP.Controllers
                 string result = kmd.GetResult(advkeyword, folderId, userId);
                 kmd.AdvSearchSimple(advkeyword, folderId, userId);
                 ViewBag.ResultText = result;
-                ViewBag.DatumClassList = kmd.datumClasses;
-                ViewBag.KMDocumentFileClasses = kmd.fileClasses;
+                ViewBag.DatumClassList = kmd.KMDocuments;
+                ViewBag.KMDocumentFileClasses = kmd.KMFiles;
             }
             catch(Exception ex)
             {
@@ -47,8 +47,8 @@ namespace KMAP.Controllers
                 kmd.AdvSearchDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
                 string result = kmd.GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
                 ViewBag.ResultText = result;
-                ViewBag.DatumClassList = kmd.datumClasses;
-                ViewBag.KMDocumentFileClasses = kmd.fileClasses;
+                ViewBag.DatumClassList = kmd.KMDocuments;
+                ViewBag.KMDocumentFileClasses = kmd.KMFiles;
             }
             catch (Exception ex)
             {
