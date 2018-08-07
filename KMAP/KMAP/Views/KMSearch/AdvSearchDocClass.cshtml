@@ -5,9 +5,9 @@
 @{
     ViewBag.Title = "KM Advance Search with DocClass and DocClassValue";
     string searchResult = string.IsNullOrEmpty(ViewBag.ResultText) ? string.Empty : ViewBag.ResultText;
-    string PartialExtendedSearchResult = "PartialExtendedSearchResult";
+    string PartialDocuments = "PartialDocuments";
     string ReadContentUrl = Constant.ReadContentUrl;
-    IList<KMDocDatumClass> datumClasses = ViewBag.DatumClassList;
+    IList<KMDocDatumClass> KMDocuments = ViewBag.DatumClassList;
 }
 
 <h2>@ViewBag.Title</h2>
@@ -15,7 +15,7 @@
 <div class="modal-body">
     @if (ViewBag.DatumClassList != null)
     {
-        @Html.Partial(PartialExtendedSearchResult, datumClasses);
+        @Html.Partial(PartialDocuments, KMDocuments);
     }
     <pre>
 @searchResult

@@ -15,7 +15,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td><a href=@string.Format("{0}{1}",Constant.ReadContentUrl,item.UniqueKey) target="_blank">@Html.DisplayFor(modelItem => item.Title)</a></td>
+                <td><a href=@item.DocumentUrl target="_blank">@Html.DisplayFor(modelItem => item.Title)</a></td>
                 <td>@Html.DisplayFor(modelItem => item.UniqueKey)</td>
                 <td>
                     @if (fileClasses != null)

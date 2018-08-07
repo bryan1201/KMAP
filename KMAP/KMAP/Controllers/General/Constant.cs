@@ -22,7 +22,7 @@ namespace KMAP.Controllers.General
         public static String DefaultSelect = "-- select one --";
         public static String DefaultSelectAddNew = "-- add new one --";
         public static String DefaultSelectone = "-- select one --";
-        public static string LogonUserId = ConfigurationManager.AppSettings["LogonUserId"];
+        public static string KMUserId = ConfigurationManager.AppSettings["KMUserId"];
         public static String PRDDBContext = "PRDDBContext";
         public static String QASDBContext = "QASDBContext";
         public static bool IsTracking = bool.Parse(ConfigurationManager.AppSettings["IsTracking"]);

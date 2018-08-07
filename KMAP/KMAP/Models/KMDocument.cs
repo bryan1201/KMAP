@@ -17,7 +17,7 @@ namespace KMAP.Models
     public class KMDocument
     {
         private string DataFormat = KMService.DataFormat;    // (必須)API資料傳輸格式，建議預設使用JSON
-        private string kmUserid = Constant.LogonUserId;     // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
+        private string kmUserid = Constant.KMUserId;     // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
         private string tenant = KMService.TENANT;
         private string KMUrl = KMService.KMPUrl;             // (必須)KM Server Site的API虛擬目錄URL路徑
 
@@ -29,20 +29,22 @@ namespace KMAP.Models
         /*BryanHPBook 10.15.69.38*/
         private string API_Key = KMService.API_Key;          // (必須)KM系統中已註冊並啟用的API Key="154e10710ea44cdaaaec9cb4f7910ddc"
 
+        public string UserId { get; set; }
         public IList<KMDocDatumClass> KMDocuments { get; set; }
         public IList<KMDocumentFile> KMFiles { get; set; }
 
-        public KMDocument()
+        public KMDocument(string userId)
         {
-            //Do nothing...
+            this.UserId = string.IsNullOrEmpty(userId) ? kmUserid : userId;
         }
 
         private void SetFileClasses(string userId)
         {
+            this.UserId = userId;
             IList<KMDocumentFile> fileclasses = new List<KMDocumentFile>();
             foreach(var datum in KMDocuments)
             {
-                KMDocumentFile kdf = new KMDocumentFile();
+                KMDocumentFile kdf = new KMDocumentFile(datum.UserId);
                 kdf.GetFileClass(docId: datum.UniqueKey.ToString(), userId: userId);
                 fileclasses.Add(kdf);
             }
@@ -56,8 +58,9 @@ namespace KMAP.Models
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             string jsonString = GetResult(advkeyword, folderId, kmUserid);
             KMDoc kmdoc = KMDoc.FromJson(jsonString);
-            KMDocuments = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
-            SetFileClasses(userId: userId);
+            kmdoc.SetUserId(userId);
+            KMDocuments = kmdoc.Data.FirstOrDefault().kmdocDatumClassArray.ToList();
+            SetFileClasses(userId);
         }
 
         public void AdvSearchDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
@@ -69,8 +72,9 @@ namespace KMAP.Models
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             string jsonString = GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, kmUserid);
             KMDoc kmdoc = KMDoc.FromJson(jsonString);
-            KMDocuments = kmdoc.Data.FirstOrDefault().DatumClassArray.ToList();
-            SetFileClasses(userId: userId);
+            kmdoc.SetUserId(userId);
+            KMDocuments = kmdoc.Data.FirstOrDefault().kmdocDatumClassArray.ToList();
+            SetFileClasses(userId);
         }
 
         public string GetResultDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
@@ -84,7 +88,6 @@ namespace KMAP.Models
 
             ArrayList al = new ArrayList();
             NameValueCollection nvc = new NameValueCollection();
-
 
             nvc.Add("enabletagsynonyms", "false");
             nvc.Add("enablekeywordsynonyms", "false");
@@ -107,7 +110,6 @@ namespace KMAP.Models
                 al.Add(k + "=" + nvc[k]);
             }
             uploadData = string.Join("&", (string[])al.ToArray(typeof(string)));
-
 
             byte[] bytesAdvSearch = Encoding.UTF8.GetBytes(uploadData);
             byte[] bytesAdvSearchResult = null;
@@ -162,7 +164,6 @@ namespace KMAP.Models
             }
             uploadData = string.Join("&", (string[])al.ToArray(typeof(string)));
 
-
             byte[] bytesAdvSearch = Encoding.UTF8.GetBytes(uploadData);
             byte[] bytesAdvSearchResult = null;
             string stringAdvSearchResult = "";
@@ -195,6 +196,13 @@ namespace KMAP.Models
 
     public partial class KMDoc
     {
+        public string UserId { get; set; }
+
+        public KMDoc(string userId)
+        {
+            this.UserId = string.IsNullOrEmpty(userId) ? Constant.KMUserId : userId;
+        }
+
         [JsonProperty("tid")]
         public long Tid { get; set; }
 
@@ -202,11 +210,34 @@ namespace KMAP.Models
         public string Statuscode { get; set; }
 
         [JsonProperty("data")]
-        public KMDocDatumUnion[] Data { get; set; }
+        public List<KMDocDatumUnion> Data { get; set; }
+    }
+
+    public partial struct KMDocDatumUnion
+    {
+        public List<KMDocDatumClass> kmdocDatumClassArray;
+        public long? Integer;
+
+        public static implicit operator KMDocDatumUnion(List<KMDocDatumClass> kmdocDatumClassArray) => new KMDocDatumUnion { kmdocDatumClassArray = kmdocDatumClassArray };
+        public static implicit operator KMDocDatumUnion(long Integer) => new KMDocDatumUnion { Integer = Integer };
+        public bool IsNull => kmdocDatumClassArray == null && Integer == null;
+
     }
 
     public partial class KMDocDatumClass
     {
+        private string _userId;
+        public string UserId {
+            get
+            {
+                return _userId;
+            }
+            set
+            {
+                this._userId = value;
+            }
+        }
+
         [JsonProperty("__type")]
         public string Type { get; set; }
 
@@ -217,7 +248,7 @@ namespace KMAP.Models
         public Guid Author { get; set; }
 
         [JsonProperty("Categories")]
-        public object[] Categories { get; set; }
+        public List<object> Categories { get; set; }
 
         [JsonProperty("CreationDatetime")]
         public string CreationDatetime { get; set; }
@@ -234,7 +265,7 @@ namespace KMAP.Models
 
         [JsonProperty("Folders")]
         [JsonConverter(typeof(KMDocDecodeArrayConverter))]
-        public long[] Folders { get; set; }
+        public List<long> Folders { get; set; }
 
         [JsonProperty("LastModifiedDatetime")]
         public string LastModifiedDatetime { get; set; }
@@ -243,7 +274,7 @@ namespace KMAP.Models
         public bool Lock { get; set; }
 
         [JsonProperty("RelatedItems")]
-        public object[] RelatedItems { get; set; }
+        public List<RelatedItem> RelatedItems { get; set; }
 
         [JsonProperty("Score")]
         public double Score { get; set; }
@@ -255,33 +286,61 @@ namespace KMAP.Models
         public string Summary { get; set; }
 
         [JsonProperty("Tags")]
-        public object[] Tags { get; set; }
+        public List<string> Tags { get; set; }
 
         [JsonProperty("Title")]
         public string Title { get; set; }
 
+        private long _uniquekey;
+
         [JsonProperty("UniqueKey")]
         [JsonConverter(typeof(KMDocParseStringConverter))]
-        public long UniqueKey { get; set; }
+        public long UniqueKey {
+            get
+            {
+                return _uniquekey;
+            }
+            set {
+                _uniquekey = value;
+                DocumentUrl = string.Format("{0}{1}", Constant.ReadContentUrl, this._uniquekey);
+                kmDocumentFile = new KMDocumentFile(this._userId);
+                kmDocumentFile.GetFileClass(docId: this.UniqueKey.ToString(), userId: this._userId);
+            }
+        }
 
         [JsonProperty("Version")]
         public long Version { get; set; }
 
         [JsonProperty("Fields")]
-        public object[] Fields { get; set; }
+        public List<object> Fields { get; set; }
+
+        public string DocumentUrl { get; set; }
+        
+        public KMDocumentFile kmDocumentFile { get; set; }
     }
 
-    public partial struct KMDocDatumUnion
+    public partial class RelatedItem
     {
-        public KMDocDatumClass[] DatumClassArray;
-        public long? Integer;
+        [JsonProperty("Description")]
+        public string Description { get; set; }
 
-        public bool IsNull => DatumClassArray == null && Integer == null;
+        [JsonProperty("Sequence")]
+        public long Sequence { get; set; }
+
+        [JsonProperty("Summary")]
+        public string Summary { get; set; }
+
+        [JsonProperty("Title")]
+        public string Title { get; set; }
     }
 
     public partial class KMDoc
     {
         public static KMDoc FromJson(string json) => JsonConvert.DeserializeObject<KMDoc>(json, KMDocConverter.Settings);
+        public void SetUserId(string userId)
+        {
+            this.UserId = userId;
+        }
     }
 
     public static class KMDocSerialize
@@ -314,8 +373,8 @@ namespace KMAP.Models
                     var integerValue = serializer.Deserialize<long>(reader);
                     return new KMDocDatumUnion { Integer = integerValue };
                 case JsonToken.StartArray:
-                    var arrayValue = serializer.Deserialize<KMDocDatumClass[]>(reader);
-                    return new KMDocDatumUnion { DatumClassArray = arrayValue };
+                    var arrayValue = serializer.Deserialize<List<KMDocDatumClass>>(reader);
+                    return new KMDocDatumUnion { kmdocDatumClassArray = arrayValue };
             }
             throw new Exception("Cannot unmarshal type DatumUnion");
         }
@@ -328,9 +387,9 @@ namespace KMAP.Models
                 serializer.Serialize(writer, value.Integer.Value);
                 return;
             }
-            if (value.DatumClassArray != null)
+            if (value.kmdocDatumClassArray != null)
             {
-                serializer.Serialize(writer, value.DatumClassArray);
+                serializer.Serialize(writer, value.kmdocDatumClassArray);
                 return;
             }
             throw new Exception("Cannot marshal type DatumUnion");
@@ -372,7 +431,7 @@ namespace KMAP.Models
 
     internal class KMDocDecodeArrayConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(long[]);
+        public override bool CanConvert(Type t) => t == typeof(List<long>);
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -385,12 +444,12 @@ namespace KMAP.Models
                 value.Add(arrayItem);
                 reader.Read();
             }
-            return value.ToArray();
+            return value;
         }
 
         public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
         {
-            var value = (long[])untypedValue;
+            var value = (List<long>)untypedValue;
             writer.WriteStartArray();
             foreach (var arrayItem in value)
             {

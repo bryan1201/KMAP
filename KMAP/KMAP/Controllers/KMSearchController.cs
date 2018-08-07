@@ -24,7 +24,7 @@ namespace KMAP.Controllers
 
             try
             {
-                kmd = new KMDocument();
+                kmd = new KMDocument(userId);
                 string result = kmd.GetResult(advkeyword, folderId, userId);
                 kmd.AdvSearchSimple(advkeyword, folderId, userId);
                 ViewBag.ResultText = result;
@@ -43,7 +43,7 @@ namespace KMAP.Controllers
         {
             try
             {
-                kmd = new KMDocument();
+                kmd = new KMDocument(userId);
                 kmd.AdvSearchDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
                 string result = kmd.GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
                 ViewBag.ResultText = result;

@@ -17,14 +17,14 @@ namespace KMAP.Models
     
     public class KMDocumentFile
     {
-        private string kmUserid = Constant.LogonUserId;     // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
+        private string kmUserid = Constant.KMUserId;     // (必須)KM系統中有權限讀寫的帳號，建議使用系統管理者帳號
         private string tenant = KMService.TENANT;
         public string DocumentId { get; set; }
 
         public IList<KFDatum> kmFiles { get; set; }
-        public KMDocumentFile()
+        public KMDocumentFile(string userId)
         {
-
+            kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
         }
 
         public string GetFileResult(string docId)

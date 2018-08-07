@@ -220,7 +220,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\KMSearch\AdvSearch.cshtml" />
-    <Content Include="Views\KMSearch\PartialExtendedSearchResult.cshtml" />
+    <Content Include="Views\KMSearch\PartialDocuments.cshtml" />
     <Content Include="Views\KMSearch\AdvSearchDocClass.cshtml" />
     <Content Include="Views\KMSearch\PartialDocumentFile.cshtml" />
   </ItemGroup>

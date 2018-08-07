@@ -50,7 +50,7 @@ namespace KMAP.Controllers.APIs
             string json = string.Empty;
             try
             {
-                kmd = new KMDocument();
+                kmd = new KMDocument(userId);
                 kmd.AdvSearchSimple(advkeyword, folderId, userId);
                 json = JsonConvert.SerializeObject(kmd, Formatting.Indented);
             }
@@ -72,7 +72,7 @@ namespace KMAP.Controllers.APIs
             string json = string.Empty;
             try
             {
-                kmd = new KMDocument();
+                kmd = new KMDocument(userId);
                 kmd.AdvSearchDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
                 json = JsonConvert.SerializeObject(kmd, Formatting.Indented);
                 //json = kmd.GetResultDocClass(docclass, docclassvalue, advkeyword, folderId, userId);
