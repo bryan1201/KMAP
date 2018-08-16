@@ -65,8 +65,8 @@ namespace KMAP.Models
 
         public void AdvSearchDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
         {
-            docclass = string.IsNullOrEmpty(docclass) ? "23" : docclass;
-            docclassvalue = string.IsNullOrEmpty(docclassvalue) ? "摘要:公差分析 AND 作者:Wilson" : docclassvalue;
+            //docclass = string.IsNullOrEmpty(docclass) ? "23" : docclass;
+            //docclassvalue = string.IsNullOrEmpty(docclassvalue) ? "摘要:公差分析 AND 作者:Wilson" : docclassvalue;
             advkeyword = string.IsNullOrEmpty(advkeyword) ? "" : advkeyword;
             folderId = string.IsNullOrEmpty(folderId) ? "" : folderId;
             kmUserid = string.IsNullOrEmpty(userId) ? kmUserid : userId;
@@ -75,6 +75,21 @@ namespace KMAP.Models
             kmdoc.SetUserId(userId);
             KMDocuments = kmdoc.Data.FirstOrDefault().kmdocDatumClassArray.ToList();
             SetFileClasses(userId);
+        }
+
+        public IList<string> ConvertString2Json(string docclassvalue)
+        {
+            IList<string> rsltList = new List<string>();
+            string tmpvalue = docclassvalue.Replace(" AND ", ",").Replace(" OR ", ",").Replace(" and ", ",").Replace(" or ", ",");
+            tmpvalue = @"{""" + tmpvalue.Replace(":","\":\"").Replace(",","\",\"") + "\"}";
+            IDictionary<string, string> datatmp = new Dictionary<string, string>();
+
+            datatmp = JsonConvert.DeserializeObject<IDictionary<string, string>>(tmpvalue);
+            foreach(var item in datatmp)
+            {
+                rsltList.Add(item.Key.ToString());
+            }
+            return rsltList;
         }
 
         public string GetResultDocClass(string docclass, string docclassvalue, string advkeyword, string folderId, string userId)
@@ -93,8 +108,18 @@ namespace KMAP.Models
             nvc.Add("enablekeywordsynonyms", "false");
             nvc.Add("containchildcategory", "false");
             nvc.Add("containchildfolder", "true");
-            nvc.Add("keywordfield", "摘要");
-            nvc.Add("keywordfield", "作者");
+            //docclassvalue=摘要:公差分析 AND 作者
+
+            IList<string> listkeywordfield = ConvertString2Json(docclassvalue);
+
+            foreach (var item in listkeywordfield)
+            {
+                nvc.Add("keywordfield", item);
+            }
+
+
+            //nvc.Add("keywordfield", "摘要");
+            //nvc.Add("keywordfield", "作者");
             nvc.Add("docclass", docclass);
             nvc.Add("docclassvalue", docclassvalue);
 
