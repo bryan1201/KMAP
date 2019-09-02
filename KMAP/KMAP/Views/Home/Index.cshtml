@@ -1,11 +1,11 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "英業達知識管理(KM) API應用範例 c#";
 }
 
 <div class="jumbotron">
     <h1>KMAP</h1>
     <p class="lead">KMAP is a webapi of KM.iec.inventec for building KM external applications.</p>
-    <p><a href="http://km.iec.inventec/esp/api" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <p><a href="http://km.iec.inventec/esp/api" class="btn btn-primary btn-lg" target="_blank">Learn more &raquo;</a></p>
 </div>
 
 <div class="row">
@@ -14,7 +14,7 @@
         <p>
             KM Advance Search with advkeyword=3D&folderId=1573&userId=IEC891652
         </p>
-        <p><a class="btn btn-default" href="~/KMSearch/AdvSearch?advkeyword=3D&folderId=1573&userId=IEC891652">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="~/KMSearch/AdvSearch?advkeyword=3D&folderId=1573&userId=IEC891652" target="_blank">Learn more &raquo;</a></p>
     </div>
 
     <div class="col-md-6">
@@ -22,19 +22,20 @@
         <p>
             KM Advance Search with docclass=23&docclassvalue=摘要:公差分析 AND 作者:Wilson&advkeyword=&folderId=3&userId=IEC891652
         </p>
-        <p><a class="btn btn-default" href="~/KMSearch/AdvSearchDocClass?docclass=23&docclassvalue=摘要:公差分析 AND 作者:Wilson&advkeyword=&folderId=3&userId=IEC891652">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="~/KMSearch/AdvSearchDocClass?docclass=23&docclassvalue=摘要:公差分析 AND 作者:Wilson&advkeyword=&folderId=3&userId=IEC891652" target="_blank">Advance Search with Document Class (View Table) &raquo;</a></p>
+        <p><a class="btn btn-default" href="~/KMSearch/AdvSearchDocClass?advkeyword=KM&folderId=3&userId=IEC891652" target="_blank">Advance Search with keyword only (View Table) &raquo;</a></p>
     </div>
 
     <div class="col-md-6">
         <h2>KM API Tools</h2>
         <p>You can easily test a KM API that offers the right mix of features for your applications.</p>
-        <p><a class="btn btn-default" href="http://km.iec.inventec/esp/api/tools.aspx">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="http://km.iec.inventec/esp/api/tools.aspx" target="_blank">Learn Advance Search by Document Class &raquo;</a></p>
     </div>
     <div class="col-md-6">
         <h2>KMDoc API Sample</h2>
         <p>You can easily test a KMDoc API for your applications.</p>
-        <p><a class="btn btn-default" href="~/api/KMDocSearch/KMDocTest">api.KMDocSearch.KMDocTest &raquo;</a></p>
-        <p><a class="btn btn-default" href="~/api/KMDocSearch/AdvSearchSimple?advkeyword=3D&folderId=1573&userId=IEC891652">api.KMDocSearch.AdvSearchSimple &raquo;</a></p>
-        <p><a class="btn btn-default" href="~/api/KMDocSearch/AdvSearchDocClass?docclass=23&docclassvalue=摘要:公差分析 AND 作者:Wilson&advkeyword=&folderId=3&userId=IEC891652">api.KMDocSearch.AdvSearchDocClass &raquo;</a></p>
+        <p><a class="btn btn-default" href="~/api/KMDocSearch/KMDocTest" target="_blank">api.KMDocSearch.KMDocTest &raquo;</a></p>
+        <p><a class="btn btn-default" href="~/api/KMDocSearch/AdvSearchSimple?advkeyword=3D&folderId=1573&userId=IEC891652" target="_blank">api.KMDocSearch.AdvSearchSimple &raquo;</a></p>
+        <p><a class="btn btn-default" href="~/api/KMDocSearch/AdvSearchDocClass?docclass=23&docclassvalue=摘要:公差分析 AND 作者:Wilson&advkeyword=&folderId=3&userId=IEC891652" target="_blank">api.KMDocSearch.AdvSearchDocClass &raquo;</a></p>
     </div>
 </div>

@@ -49,6 +49,10 @@ namespace KMAP.Models
                 result = client2.DownloadString(targetAdvSearchUrl);
                 //ExtendedSearchResult extendedSearchResult = ExtendedSearchResult.FromJson(result);
                 KMFile kmfileSearchResult = KMFile.FromJson(result);
+                foreach(var row in kmfileSearchResult.Data)
+                {
+                    row.DocumentId = docId;
+                }
                 kmFiles = kmfileSearchResult.Data;
                 
                 return result;
@@ -79,6 +83,8 @@ namespace KMAP.Models
 
     public partial class KFDatum
     {
+        public string DocumentId { get; set; }
+
         [JsonProperty("__type")]
         public string Type { get; set; }
 
@@ -101,13 +107,13 @@ namespace KMAP.Models
         [JsonProperty("SourceUri")]
         public string SourceUri { get; set; }
 
-        public string GetFileUrl(string DocId)
+        public string GetFileUrl(string DocId, string FileName)
         {
             string result = string.Empty;
 
             //http://km.iec.inventec/ESP/download.aspx?documentId=3575&fileName=KMAP.zip
             string FileUrl = @"http://km.iec.inventec/ESP/download.aspx?documentId={0}&fileName={1}";
-            result = string.Format(FileUrl, DocId, this.DisplayName);
+            result = string.Format(FileUrl, DocId, FileName);
 
             return result;
         }

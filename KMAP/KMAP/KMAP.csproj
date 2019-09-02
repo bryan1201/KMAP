@@ -165,6 +165,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\General\Constant.cs" />
+    <Compile Include="Controllers\General\HtmlRemoval.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KMSearchController.cs" />
     <Compile Include="Global.asax.cs">

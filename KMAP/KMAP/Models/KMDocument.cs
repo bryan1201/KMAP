@@ -109,14 +109,14 @@ namespace KMAP.Models
             nvc.Add("containchildcategory", "false");
             nvc.Add("containchildfolder", "true");
             //docclassvalue=摘要:公差分析 AND 作者
-
-            IList<string> listkeywordfield = ConvertString2Json(docclassvalue);
-
-            foreach (var item in listkeywordfield)
-            {
-                nvc.Add("keywordfield", item);
+            if(!string.IsNullOrEmpty(docclassvalue))
+            { 
+                IList<string> listkeywordfield = ConvertString2Json(docclassvalue);
+                foreach (var item in listkeywordfield)
+                {
+                    nvc.Add("keywordfield", item);
+                }
             }
-
 
             //nvc.Add("keywordfield", "摘要");
             //nvc.Add("keywordfield", "作者");
@@ -160,6 +160,7 @@ namespace KMAP.Models
 
         public string GetResult(string advkeyword, string folderId, string userId)
         {
+            string json = string.Empty;
             string result = string.Empty;
             userId = string.IsNullOrEmpty(userId) ? kmUserid : userId;
             advkeyword = string.IsNullOrEmpty(advkeyword) ? "3D" : advkeyword;
@@ -198,6 +199,7 @@ namespace KMAP.Models
                 client2.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
                 bytesAdvSearchResult = client2.UploadData(targetAdvSearchUrl, bytesAdvSearch);
                 stringAdvSearchResult = Encoding.UTF8.GetString(bytesAdvSearchResult);
+                
                 return result = stringAdvSearchResult;
             }
             catch (Exception ex)

@@ -1,6 +1,6 @@
 ﻿@using KMAP.Models
 @using KMAP.Controllers.General
-@model IEnumerable<KMDocumentFile>
+@model IEnumerable<KFDatum>
 @{ 
     //http://km.iec.inventec/ESP/download.aspx?documentId=3575&fileName=KMAP.zip
 }
@@ -12,14 +12,13 @@
             </tr>
             @foreach (var item in Model)
             {
-                string DocId = item.DocumentId;
-                foreach (var file in item.kmFiles)
-                {
-                    <tr>
-                        <td><a href=@file.GetFileUrl(DocId:DocId) target="_blank">@Html.DisplayFor(modelItem => file.DisplayName)</a></td>
-                        <td>@Html.DisplayFor(modelItem => file.FileSize)</td>
-                    </tr>
-                }
+                string result = item.GetFileUrl(DocId: item.DocumentId, FileName: HttpUtility.UrlEncode(item.DisplayName));
+                    
+                <tr>
+                    <td><a href=@result target="_blank">@Html.DisplayFor(modelItem => item.DisplayName)</a></td>
+                    <td>@Html.DisplayFor(modelItem => item.FileSize)</td>
+                </tr>
+                
             }
         </table>
     </div>

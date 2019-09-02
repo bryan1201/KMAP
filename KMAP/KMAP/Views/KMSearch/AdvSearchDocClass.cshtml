@@ -13,13 +13,40 @@
 <h2>@ViewBag.Title</h2>
 
 <div class="modal-body">
+    @using (Html.BeginForm("AdvSearchDocClass", "KMSearch", FormMethod.Get))
+    {
+        <table class="table table-bordered table-striped table-condensed">
+            <tr>
+                <th>知識類型</th>
+                <th>知識類型值</th>
+                <th>Key Word</th>
+                <th>Folder Id</th>
+                <th>User Id</th>
+                <th>&nbsp;</th>
+            </tr>
+            <tr>
+                <td>@Html.TextArea("docclass", "", new { @class = "form-control", @rows = 1, style = "resize: none;" })</td>
+                <td>@Html.TextArea("docclassvalue", "", new { @class = "form-control", @rows = 1, style = "resize: none;" })</td>
+                <td>
+                    @Html.TextArea("advkeyword", "", new { @class = "form-control", @rows = 1, style = "resize: none;" })
+                </td>
+                <td>
+                    @Html.TextArea("folderId", "3", new { @class = "form-control", @rows = 1, style = "resize: none;" })
+                </td>
+                <td>
+                    @Html.TextArea("userId", "IEC891652", new { @class = "form-control", @rows = 1, style = "resize: none;" })
+                </td>
+                <td><input class="btn btn-primary btn-lg" type="submit" value="搜尋" /></td>
+            </tr>
+        </table>
+    }
     @if (ViewBag.DatumClassList != null)
     {
-        @Html.Partial(PartialDocuments, KMDocuments);
+        @Html.Partial(PartialDocuments, KMDocuments)
     }
     <pre>
-@searchResult
-    </pre>
-   
+        @searchResult
+        </pre>
+
 </div>
 

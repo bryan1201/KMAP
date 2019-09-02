@@ -10,21 +10,37 @@
         <tr>
             <th>@Html.DisplayNameFor(model => model.Title)</th>
             <th>@Html.DisplayNameFor(model => model.UniqueKey)</th>
+            <th>@Html.DisplayNameFor(model => model.RelatedItems)</th>
             <th>AttachFile</th>
         </tr>
         @foreach (var item in Model)
         {
-            <tr>
-                <td><a href=@item.DocumentUrl target="_blank">@Html.DisplayFor(modelItem => item.Title)</a></td>
-                <td>@Html.DisplayFor(modelItem => item.UniqueKey)</td>
-                <td>
-                    @if (fileClasses != null)
+        <tr>
+            <td><a href=@item.DocumentUrl target="_blank">@HtmlRemoval.StripTagsRegex(HttpUtility.HtmlDecode(item.Title))</a></td>
+            <td>@Html.DisplayFor(modelItem => item.UniqueKey)</td>
+            <td>
+                @try
+                {
+                    //string firstvalue =item.RelatedItems.FirstOrDefault()?.Title ?? string.Empty;
+                    //@HtmlRemoval.StripTagsRegex(HttpUtility.HtmlDecode(firstvalue));
+
+                    foreach (var subitem in item.RelatedItems)
                     {
-                        @Html.Partial(PartialDocumentFile, fileClasses);
+                        string firstvalue = subitem?.Title ?? string.Empty;
+                        @HtmlRemoval.StripTagsRegex(HttpUtility.HtmlDecode(firstvalue));
+                        <br />
                     }
 
-                </td>
-            </tr>
+                }
+                catch { string.Format("空"); }
+            </td>
+            <td>
+                @if (item != null)
+                {
+                    @Html.Partial(PartialDocumentFile, item.kmDocumentFile.kmFiles);
+                }
+            </td>
+        </tr>
         }
     </table>
 </div>
